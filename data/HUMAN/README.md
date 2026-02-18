@@ -28,7 +28,7 @@ grep -w '^chr7' variants_freeze4inv_sv_inv_hg38_processed_arbigent_filtered_manu
 ## Genome set
 
 - Source: HPRC
-- Reference:
+- Reference: GRCh38
 
 ### Files
 
