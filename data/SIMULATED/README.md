@@ -17,9 +17,6 @@ The automatized scripts automatize steps 2) and 3) for a given SNP rate, and gen
 
 - `create_genome_datasets_2haplotypes.sh`
 - `create_genome_datasets_10haplotypes.sh`
-- `create_genome_datasets_10haplotypes_with_fixedSNPsinInv.sh`  (modified version to fix all (or some SNPs inside the inversions))
-- `create_genome_datasets_10haplotypes_rare_inversions.sh` (here the set of inversions is divided in 9 non-overlapping subsets, so that each inversion is present in exactly one haplotype)
-
 
 ### Prepare the input data for the automatized script
 
@@ -29,17 +26,9 @@ The automatized scripts automatize steps 2) and 3) for a given SNP rate, and gen
 
 Reference genome requirements: one single chromosome + header in panSN format (eg. `>chm13#0#chr21` or `>CARC#0#chr6`)
     
-2 sets of simulations:
-- Simulations based on C. arcania chr 6 chromosome (20 Mb) : `../data/new_sim_coeno/reference/CARC_chr6.fa` (panSN format version) 
-    - old version (non panSN): `../assemblies/C-arcania_BST1/data/CARC_6.fa`
-- Simulations based on human chr21 (28 Mb) : `../invpg-annot/simu-chr21/chr21.fa`
+1 set of simulations:
+- Simulations based on human chr21 (28 Mb) : `chr21.fa`
     - Sub-sequence of the CHM13 chr21 (no N) : from 17 Mb - to 45 Mb, to avoid peri-centromeric/sub-telomeric regions
-        ```
-        echo ">chm13#0#chr21" >chr21.fa
-        python3 ~/workspace/my_scripts/get_subsequence.py -f chm13_chr21_full.fa -b 17000000 -e 45000000 >> chr21.fa 
-        python3 ~/workspace/my_scripts/get_sequence_length.py chr21.fa 
-        # chm13#0#chr21 l=28000000
-        ``` 
 
 #### Inversion generation
 
@@ -57,27 +46,10 @@ Parameters:
 python 01_generate_random_inversion_set.py <REF> <number> <SEED> > <VCF>
 ```
 
-For the simulation on human chr21, the file: `../invpg-annot/simu-chr21/chr21_sim_100inv.vcf` was obtained with the following command:
+For the simulation on human chr21, the file: `chr21_sim_100inv.vcf` was obtained with the following command:
 
 ```bash
-cd ../invpg-annot/simu-chr21/
 python 01_generate_random_inversion_set.py chr21.fa 100 10 > chr21_sim_100inv.vcf
-```
-
-For the new simulations on C. arcania chr6:
-
-- the file: `../data/new_sim_coeno/100_inv/chr6_sim_100inv.vcf` was obtained with the following command:
-
-```bash
-cd ../data/new_sim_coeno/100_inv/
-python 01_generate_random_inversion_set.py ../reference/CARC_chr6.fa 100 25 > chr6_sim_100inv.vcf
-```
-
-- the file: `../data/new_sim_coeno/50_inv/chr6_sim_50inv.vcf` was obtained with the following command:
-
-```bash
-cd ../data/new_sim_coeno/50_inv/
-python 01_generate_random_inversion_set.py ../reference/CARC_chr6.fa 50 25 > chr6_sim_50inv.vcf
 ```
 
 ### Automatized script for 2-haplotype dataset generation
@@ -109,22 +81,10 @@ Output:
 
 To simulate other SNP divergences, the same command line can be used, changing only the DIV parameter. The same output directoty can be used for all divergences.
 
-Commands used for new simulations on C. arcania chr6:
-
-```bash
-# 100 inversions, div 0.1%
-cd ../data/new_sim_coeno/100_inv/
-./create_genome_datasets_2haplotypes.sh ../reference/CARC_chr6.fa 0.1 chr6_sim_100inv.vcf carc simulated1 genomes_2hap 25
-
-# 50 inversions, div 0.1%
-cd ../data/new_sim_coeno/50_inv/
-./create_genome_datasets_2haplotypes.sh ../reference/CARC_chr6.fa 0.1 chr6_sim_50inv.vcf carc simulated1 genomes_2hap 25
-```
-
 Command used for human chr21 div 0% simulation:
 ```bash
 cd ../data/new_sim_human/
-./create_genome_datasets_2haplotypes.sh ../invpg-annot/simu-chr21/chr21.fa 0 ../invpg-annot/simu-chr21/chr21_sim_100inv.vcf chm13 simulated1 genomes_2hap/ 25
+./create_genome_datasets_2haplotypes.sh chr21.fa 0 .chr21_sim_100inv.vcf chm13 simulated1 genomes_2hap 25
 ```
 
 ### Automatized script for 10-haplotype dataset generation
@@ -150,10 +110,9 @@ Parameters:
 ./create_genome_datasets_10haplotypes.sh <REF> <DIV> <INV> <REF_ID> <SIM_ID> <OUT_DIR> <SEED>
 ```
 
-Example for the human chr21:
+Command used for human chr21 div 1% simulation:
 ```bash
-cd ../invpg-annot/simu-chr21_10haplo/
-./create_genome_datasets_10haplotypes.sh ../simu-chr21/chr21.fa 0.1 ../simu-chr21/chr21_sim_100inv.vcf chm13 tenhaplo genomes_10hap 10
+./create_genome_datasets_10haplotypes.sh chr21.fa 1 chr21_sim_100inv.vcf chm13 tenhaplo genomes_10hap 10
 ```
 
 Output: 
@@ -162,65 +121,3 @@ Output:
 - Input files for pg pipelines: `[mgc|cactus|pggb]_input_10hap_div0.1.txt` with the absolute paths of the pairs of genomes for each pipeline
 - `OUT_DIR_VCF/` contains 2 vcf files for each simulated haplotype, with their SNP and inversion sets.
 - 2 txt files `*_inv_distrib.txt` and `*_inv_histo.txt` with the distribution of inversions among the 9 haplotypes, to be sure that each inversion is simulated in at least one haplotype. 
-
-Command used for human chr21 div 1% simulation:
-```bash
-../data/SIMULATED/create_genome_datasets_10haplotypes.sh ../invpg-annot/simu-chr21/chr21.fa 1 ../invpg-annot/simu-chr21/chr21_sim_100inv.vcf chm13 tenhaplo ../data/new_sim_human/genomes_10hap 10
-```
-
-### If we want to fix all (or 50%) SNPs inside the inversions
-
-Use the script `create_genome_datasets_10haplotypes_with_fixedSNPsinInv.sh`. Same usage as previously.
-
-Note: to change betwenn all and 50%, this is governed by the parameter `ALLFIXED` hard-coded in the main script.
-
-Command used for human chr21 div 1% simulation:
-```bash
-cd ../invpg-annot/simu-chr21_10haplo/
-../data/SIMULATED/create_genome_datasets_10haplotypes_with_fixedSNPsinInv.sh ../simu-chr21/chr21.fa 1 ../simu-chr21/chr21_sim_100inv.vcf chm13 tenhaplofixed genomes_10hap_fixed 10
-../data/SIMULATED/create_genome_datasets_10haplotypes_with_fixedSNPsinInv.sh ../simu-chr21/chr21.fa 1 ../simu-chr21/chr21_sim_100inv.vcf chm13 tenhaplohalffixed genomes_10hap_halffixed 9
-```
-
-
-### If we want only rare inversions 
-
-Use the script `create_genome_datasets_10haplotypes_rare_inversions.sh`. Same usage as previously.
-
-Command used for human chr21 div 1% simulation:
-```bash
-cd ../invpg-annot/simu-chr21_10haplo/
-../data/SIMULATED/create_genome_datasets_10haplotypes_rare_inversions.sh ../simu-chr21/chr21.fa 1 ../simu-chr21/chr21_sim_100inv.vcf chm13 tenhaplorare genomes_10hap_rare 10
-```
-
-
-
-## [DEPRECATED] Command lines of individuals scripts 
-
-### Parameters
-- `number` [int]: number of inversions to simulate (reproductibility: **100**)
-- `PCT` [float]: SNP % to simulate
-- `NAME` [str]: name of the fasta  file of the synthetic chromosome
-- `HEADER` [str]: fasta header of the synthetic chromosome
-- `SEED`[int]: fixes the random seed for reproducibility
-
-### Output files
-- `VCF` [str]: path to output simulated inversion set (`../data/simulated_inv.vcf`)
-- `INIT_SYNTHETIC` [str]: path to output synthetic chromosome with SNPs
-- `NAME`.fa: filename of the output synthetic chromosome with SNPs and 100 inversions (`../data/simulated_seq_div*.fa`, `*` = {0,1,5,10})
-- simulated_hap_50pctINV_`i`.fa: filename of the output synthetic chromosomes with SNPs and 50 inversions, `i` = {1,2,...,8} (`../data/sim_data/simulated_div00_8hap/simulated_hap_50pctINV_*.fa`)
-
-
-```bash
-# Step 1
-python 01_generate_random_inversion_set.py <REF> <number>  <SEED> > <VCF>
-
-# Step 2
-python 02_generate_synthetic_chrom_with_snps.py <REF> <INIT_SYNTHETIC> <PCT> <SEED>
-
-# Step 3.A 
-python 03a_simulate_inversions_in_1_synthetic_chrom.py <INIT_SYNTHETIC> <VCF> <NAME> 100 <HEADER> <SEED>
-
-# Step 3.B 
-03b_simulate_inversions_in_8_synthetic_chroms.sh <INIT_SYNTHETIC> <VCF> 
-```
-

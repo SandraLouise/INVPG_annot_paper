@@ -31,16 +31,16 @@ grep -w '^chr7' variants_freeze4inv_sv_inv_hg38_processed_arbigent_filtered_manu
 
 - `haplotypes_full/`: contains full diploid genome of GRCh38, NA19240, HG00733, HG03486, HG02818; one file per haplotype.
 - `haplotypes_chr7/`: contains chromosome 7 of GRCh38, NA19240, HG00733, HG03486, HG02818; one file per haplotype.
-  - `haplotypes_chr7/intermediate/`: intermediate files for chromosome-contig association (RagTag output)
+- `haplotypes_chr7/intermediate/`: intermediate files for chromosome-contig association (RagTag output)
 
 ### Processing
 
-#### Step A - extract multifasta for selected genomes (Siegfried)
+#### Step A - extract multifasta for selected genomes
 
 Script `00_extract_multifasta_from_agc.py`.
 Extract from the HPRC `.agc` file (obtainable with `curl -o HPRC-yr1.agc https://zenodo.org/record/5826274/files/HPRC-yr1.agc?download=1`) with added [GRCh38](https://s3-us-west-2.amazonaws.com/human-pangenomics/index.html?prefix=working/HPRC_PLUS/GRCh38/assemblies/).
 
-#### Step B - assign contigs to chromosome 7 (Sandra)
+#### Step B - assign contigs to chromosome 7
 
 1. List ref chromosomes to ignore for chrom-contig association (extra contigs)
 
@@ -58,25 +58,6 @@ Uses second script `02_run_ragtag_scaffold.sh` to launch each ragtag run on the 
 
 Script: `03_extract_chr7_contigs.sh`
 Lists each haplotypes contigs conrresponding to chr7, then extracts them using samtools faidx.
-
-#### Step C - graph construction (Sandra for cactus, Siegfried for pggb and mgc)
-
-1. Build mgc graph
-
-Build the pipeline file for minigraph-cactus (tab-separated .txt file). Uses the script `04_cactus_file.py`
-
-```bash
-ENV_PANCAT="pancat"
-conda activate $ENV_PANCAT
-python scripts/04_cactus_file.py haplotypes_chr7 ../../results/pangenomes/human_pg/mgc/pipeline/pipeline.txt
-conda deactivate
-```
-
-Then, constuct the pangenome graph with `05_build_mgc_graph.sh`.
-
-3. Build Cactus graph
-
-
 
 ## References
 
