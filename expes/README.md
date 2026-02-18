@@ -1,95 +1,78 @@
-# Commands and scripts to reproduce the pangenome graphs and the bubble annotation
+# Automated pipeline run
 
 > [!NOTE]\
 > Simply cloning this repo does not create the directory structure. You may need to adapt the command line instructions to your own data to proceed.
 
-For a given set of experiments, we create a directory `expe/` (outside of the directory where we stored or simulated the input haplotype sequences) with the following structure:
+The automated pipeline allows to reproduce the results of the paper. It encompasses the graph construction, bubble calling, inversion annotation and annotation evaluation.
 
-```
-expeXX/
-└── graphs/
-└── bubbles/
-└── annotations/
-└── evaluations/
-```
+## Main scripts
 
+The automated pipeline is run by two main scripts:
+- `expe_run.sh`: manages the automation, launches the pipeline (with SBATCH) for a given dataset and with the graph building tools given by the user.
+    - git: [expes/automation/expe_run.sh](expes/automation/expe_run.sh)
+- `run_pipeline.sh`: called by `expe_run.sh` for each graph building tool, contains the pipeline.
+    - git: [expes/automation/run_pipeline.sh](expes/automation/run_pipeline.sh)
 
-## 1. Graph construction
+## Usage
 
-### Requirement
+### Input
 
-- the input haplotypes should be in individual fasta files (not necessarily in the same directory, not necessarily in a directory of their own.
-- 2 (uncompatible) types of fasta are necessary:
-	- for PGGB, the headers of fasta entries must respect the [panSN spec](https://github.com/pangenome/PanSN-spec).  Example: `chm13#0#chr21`. (species name + "#" + haplotype phase + "#" + scaffold/chromosome name)
-	- for Cactus, the headers must not contain any "#" characters
-	- for MGC and minigraph: we use the PGGB format
+- `dir_input_files`: absolute path to the directory containing the genome input files
+    - **/!\ the path of the reference genome must be listed first in all input files**
+- `expe_id`: identifier of the experience
+    - **/!\ must match the filename of the input files** (_e.g._ "2hap_div0.1" for input files named "*tool*_input_2hap_div0.1.txt")
+- `path_output`: absolute path to the output directory
+- `path_truth`: absolute path to the inversion truth file
+    - **/!\ for now best to use a BED formatted file** (see [evaluation_commands.md](https://gitlab.inria.fr/sromain/invpg-annot_publication/-/blob/main/expes/eval_and_stats/evaluation_commands.md?ref_type=heads#requires-truth_file-to-be-in-bed-format))
+- `tools`: list of the graph building tools to use (separated by spaces), among {`cactus`, `minigraph`, `mgc`, `pggb`}.
 
-### Construction scripts
-
-For each pangenome graph builder (minigraph, mgc, cactus and PGGB), we provide a single bash script in the [graph\_construction\_scripts directory](graph_construction_scripts/) named `build_[tool]_graph.sh` that takes 2 parameters as input:
-
- - `INPUT_FILE`: the path to a text file containing the absolute paths to the haplotype fasta files and optionally other information necessary for the corresponding tool.
- - `FINAL_GFA`: the output gfa file path.
-
-```
-sbatch build_[tool]_graph.sh <INPUT_FILE> <FINAL_GFA>
-```
-
-#### Notes: 
-
-- all intermediary files and directories are cleaned after the run, the only output is the final GFA file in correct GFA format (GFA1.0 format with all P-lines).
-- works with any number of haplotypes
-
-
-### Versions of the tools:
-
-| tool | version |
-| --- | --- | --- |
-| minigraph | `0.21-r606` |
-| mc | `cactus_2_9_9` |
-| cactus | `6.0.0` (with `--version`)  |
-| pggb | `0.7.4` |
-
-
-## 2. Bubble detection
-
-### VG-deconstruct for Cactus, Minigraph-Cactus, and PGGB graphs
-
-Note: `vg-deconstruct` can detect path-explicit inversions consisting of a single node. It is no longer necessary to use another script for these bubbles.
-
-Env conda : `vg1.65.0`
+### Command
 
 ```bash
-vg deconstruct -p REFPATH -a GRAPH.gfa > BUBBLES.vcf
+expe_run.sh dir_input_files expe_id path_output path_truth tools
 ```
 
-- `REFPATH`: Genomes path names in the graph can be checked with the following command : 
+Examples:
+```bash
+# Human chm13 chr21
+expe_run.sh . 2hap_div0.1 . chr21_sim_100inv.bed cactus minigraph mgc pggb
+expe_run.sh . 2hap_div0 . chr21_sim_100inv.bed cactus minigraph mgc pggb
 
-   ```bash
-   vg paths -Mx GRAPH.gfa
-   ```
-   
-   > Note: that looking at the name in second field of P lines is not sufficient (it can be different) : `grep '^P' GRAPH.gfa | cut -c1-50` 
-   
-### Minigraph
+### Output
 
-> gfatools v.0.4-r214-dirty
+The output is sorted into 4 subfolders in the given output directory, which are created if not yet existing:
+- `graphs`: contains the graphs created with each given graph building tools, named as "`expe_id`_`tool`.gfa"
+- `bubbles`: contains the VCFs of the bubbles extracted for each created graphs, named as "`expe_id`_`tool`.vcf"
+- `inversions`: contains both the annotation (in BED format) and the annotation statistics for each created graph, named as "`expe_id`\_`tool`.bed" and "`expe_id`_`tool`.stats"
+- `evaluation`: contains the graph, annotation and evaluation statistics for each created graph, "`expe_id`_`tool`.eval"
+
+### Prepare merged results for paper figures
+
+#### .eval file
+
+Example with human chm13 chr21 simulation at div 0%:
+```bash
+cd ../paper_PG_INV/results/chm13_chr21/evaluation
+cat 2hap_div0_pggb_v0.7.4.eval | sed 's/pggb/pggb_v0.7.4/g' > merged_2hap_div0.eval
+cat $(ls 2hap_div0_*.eval | grep -v 'pggb_v0.7.4') | grep -v '^PG' >> merged_2hap_div0.eval
+```
+
+#### .intersect file
+
+Example with human chm13 chr21 simulation:
 
 ```bash
-sbatch gfatools_pipeline_SBATCH.sh <path_to_output_dir> <path_to_rGFA> <path_to_ref_seq> <path_to_hap1_seq> ... <path_to_hapn_seq>
+cd ../paper_PG_INV/results/chm13_chr21/evaluation
+for bed in $(ls ../inversions/2hap_div*_*.bed); do fbname=$(basename "$bed" .bed); arrEXPE=(${fbname//_/ }); pg=${arrEXPE[2]}; div=${arrEXPE[1]}; bedtools intersect -a ../chr21_sim_100inv.bed -b $bed -wao -f 0.5 -r | awk -v OFS='\t' -v pg="$pg" -v div="$div" '{print pg,div,$2,$3,$5,$6,$7}'; done > merged_2hap.intersect
+sed -i 's/div//g' merged_2hap.intersect
 ```
 
-**Utiliser les chemins absolus des fichiers d'input.**
+## Secondary scripts used by the pipeline
 
-
-## 3. Bubble annotation
-
-> [INVPG-annot](https://github.com/SandraLouise/INVPG_annot)
-
-For all graph types:
-
-```bash
-invpg -v BUBBLES.vcf -g GRAPH.gfa -d DIV_PERCENTAGE
-```
-
-- using DIV_PERCENTAGE = 10.
+- [build_cactus_graph.sh](expes/graph_construction_scripts/build_cactus_graph.sh)
+- [build_minigraph_graph.sh](expes/graph_construction_scripts/build_minigraph_graph.sh)
+- [build_mgc_graph.sh](expes/graph_construction_scripts/build_mgc_graph.sh)
+- [build_pggb_graph.sh](expes/graph_construction_scripts/build_pggb_graph.sh)
+- [minigraph_call_pipeline.sh](expes/bubble_calling/minigraph_call_pipeline.sh): calls bubbles in minigraph graphs and convert them to VCF format
+- [graph_annot_statistics.sh](expes/eval_and_stats/graph_annot_statistics.sh): computes the graph, annotation and evaluation statistics from a GFA file, the INVPG-annot stats output , and the inversion truth file
+- [redundancy_stats.py](expes/eval_and_stats/redundancy_stats.py): called by `graph_annot_statistics.sh`, computes the annotation redundancy statistics
