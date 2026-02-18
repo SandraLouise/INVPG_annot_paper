@@ -1,0 +1,56 @@
+---
+title: "Inversions of the human dataset"
+author: "Claire Lemaitre"
+date: "2026-02-06"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Inversion size distribution
+
+
+```{r bedfiles}
+invX=read.table("HGSVC2_hg38_chrX_inv.bed")
+inv7=read.table("HGSVC2_hg38_chr7_inv.bed")
+inv7$size = inv7$V3-inv7$V2+1
+invX$size = invX$V3-invX$V2+1
+summary(inv7$size)
+summary(invX$size)
+allSize=c(inv7$size,invX$size)
+summary(allSize)
+N=length(allSize)
+sum(allSize<100000)
+sum(allSize<10000)
+```
+
+Nb = `r length(allSize)` inversions, `r nrow(inv7)` in chr 7 and `r nrow(invX)` in chr X.
+
+Median = `r round(median(allSize)/1000)` Kb
+
+`r sum(allSize<100000)` smaller than 100 Kb = `r round(sum(allSize<100000)/N*100)` %
+
+`r sum(allSize<10000)` smaller than 10 Kb = `r round(sum(allSize<10000)/N*100)` %
+
+`r sum(allSize<5000)` smaller than 5 Kb = `r round(sum(allSize<5000)/N*100)` %
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r histo, echo=FALSE}
+hist(allSize/1000,xlab="Inversion size in Kb",br=30)
+library("ggplot2")
+ggplot(data.frame(allSize), aes(allSize/1000)) +
+    geom_histogram(color="black", fill = "grey", bins=30) +
+    scale_x_log10() + xlab("Inversion size in Kb (log scale)")
+
+```
+
+
