@@ -121,6 +121,6 @@ Command used for human chr21 div 1% simulation:
 Output: 
 - The fasta file of the simulated genome `OUT_DIR/` (with header respecting the panSN spec, eg. `>chm13#0#chr21`) (note: the reference haplotype is not duplicated here)
 - `OUT_DIR/` contains a  subdir `cactus_genomes/` with the ref + simulated genomes formatted for cactus
-- Input files for pg pipelines: `[mgc|cactus|pggb]_input_10hap_div0.1.txt` with the absolute paths of the pairs of genomes for each pipeline
+- Input files for pg pipelines: `[mgc|cactus|pggb]_input_10hap_div0.1.txt` with the absolute paths of all haplotypes for each pipeline
 - `OUT_DIR_VCF/` contains 2 vcf files for each simulated haplotype, with their SNP and inversion sets.
 - 2 txt files `*_inv_distrib.txt` and `*_inv_histo.txt` with the distribution of inversions among the 9 haplotypes, to be sure that each inversion is simulated in at least one haplotype. 

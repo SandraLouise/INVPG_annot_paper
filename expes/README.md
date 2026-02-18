@@ -29,9 +29,11 @@ The automated pipeline is run by two main scripts:
 ### Input
 
 - `dir_input_files`: absolute path to the directory containing the genome input files
+    - input files in this directory must be named as "*[tool]*_input_*[expe_id]*.txt"
+    - this text file contains the absolute paths to the haplotype fasta files and optionally other information necessary for the corresponding tool.
     - **/!\ the path of the reference genome must be listed first in all input files**
 - `expe_id`: identifier of the experience
-    - **/!\ must match the filename of the input files** (_e.g._ "2hap_div0.1" for input files named "*tool*_input_2hap_div0.1.txt")
+    - **/!\ must match the filename of the input files** (_e.g._ "2hap_div0.1" for input files named "*[tool]*_input_2hap_div0.1.txt")
 - `path_output`: absolute path to the output directory
 - `path_truth`: absolute path to the inversion truth file
     - /!\ for now best to use a BED formatted file (see [evaluation_commands.md](eval_and_stats/evaluation_commands.md?ref_type=heads#requires-truth_file-to-be-in-bed-format))
@@ -77,3 +79,23 @@ The output is sorted into 4 subfolders in the given output directory, which are 
 	- for PGGB, the headers of fasta entries must respect the [panSN spec](https://github.com/pangenome/PanSN-spec).  Example: `chm13#0#chr21`. (species name + "#" + haplotype phase + "#" + scaffold/chromosome name)
 	- for Cactus, the headers must not contain any "#" characters
 	- for MGC and minigraph: we use the PGGB format
+
+
+### Example of input files
+
+```
+# for minigraph and pggb:
+/absolute/path/chr21.fa
+/absolute/path/simulated1_div0.1_100INV.fa
+
+# for Minigraph-Cactus:
+chm13	/absolute/path/chr21.fa
+simulated1	/absolute/path/simulated1_div0.1_100INV.fa
+
+# for Cactus:
+(chm13:1.0,simulated1:1.0);
+chm13	/absolute/path/chr21.fa
+simulated1	/absolute/path/simulated1_div0.1_100INV.fa
+```
+
+
