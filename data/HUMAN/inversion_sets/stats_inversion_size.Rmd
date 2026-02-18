@@ -39,18 +39,3 @@ Median = `r round(median(allSize)/1000)` Kb
 `r sum(allSize<5000)` smaller than 5 Kb = `r round(sum(allSize<5000)/N*100)` %
 
 
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r histo, echo=FALSE}
-hist(allSize/1000,xlab="Inversion size in Kb",br=30)
-library("ggplot2")
-ggplot(data.frame(allSize), aes(allSize/1000)) +
-    geom_histogram(color="black", fill = "grey", bins=30) +
-    scale_x_log10() + xlab("Inversion size in Kb (log scale)")
-
-```
-
-
