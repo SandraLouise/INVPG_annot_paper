@@ -27,7 +27,7 @@ The automatized scripts automatize steps 2) and 3) for a given SNP rate, and gen
 
 #### Input chromosome files
 
-Reference genome requirements: one single chromosome + header in panSN format (eg. `>chm13#0#chr21` or `>CARC#0#chr6`)
+Reference genome requirements: one single chromosome + header in panSN format (eg. `>chm13#0#chr21`)
     
 1 set of simulations:
 - Simulations based on human chr21 (28 Mb) : `chr21.fa`

@@ -20,7 +20,7 @@ expeXX/
 
 - the input haplotypes should be in individual fasta files (not necessarily in the same directory, not necessarily in a directory of their own.
 - 2 (uncompatible) types of fasta are necessary:
-	- for PGGB, the headers of fasta entries must respect the [panSN spec](https://github.com/pangenome/PanSN-spec).  Example: `CARC#0#chr6` or `chm13#0#chr21`. (species name + "#" + haplotype phase + "#" + scaffold/chromosome name)
+	- for PGGB, the headers of fasta entries must respect the [panSN spec](https://github.com/pangenome/PanSN-spec).  Example: `chm13#0#chr21`. (species name + "#" + haplotype phase + "#" + scaffold/chromosome name)
 	- for Cactus, the headers must not contain any "#" characters
 	- for MGC and minigraph: we use the PGGB format
 
@@ -71,16 +71,6 @@ vg deconstruct -p REFPATH -a GRAPH.gfa > BUBBLES.vcf
    
    > Note: that looking at the name in second field of P lines is not sufficient (it can be different) : `grep '^P' GRAPH.gfa | cut -c1-50` 
    
-  Examples of `REFPATH` for several graphs (coeno simulations div 0.1%):  
-  
-  ```
-  MGC: CARC#0#chr6
-  PGGB: CARC#0#chr6#0
-  Cactus: CARC#scaffold_6
-  ```
-    - MGC and PGGB were built with the same `.fa` files (with ref header (panSN): "CARC#0#chr6"), it seems that both re-use this header but PGGB adds "#0" 
-    - Cactus: combination of the name put in `cactus_input.txt` ("CARC") and the header of sequence ("scaffold_6") in `.fa`
-
 ### Minigraph
 
 > gfatools v.0.4-r214-dirty

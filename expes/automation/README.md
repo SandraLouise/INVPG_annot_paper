@@ -38,11 +38,6 @@ Examples:
 expe_run.sh . 2hap_div0.1 . chr21_sim_100inv.bed cactus minigraph mgc pggb
 expe_run.sh . 2hap_div0 . chr21_sim_100inv.bed cactus minigraph mgc pggb
 
-# Coeno carc chr6
-expe_run.sh ../paper_PG_INV/data/new_sim_coeno/50_inv/ 2hap_div0.1 ../paper_PG_INV/results/carc_chr6/50_inv/ ../paper_PG_INV/results/carc_chr6/chr6_sim_50inv.bed cactus minigraph mgc pggb
-expe_run.sh ../paper_PG_INV/data/new_sim_coeno/100_inv/ 2hap_div0.1 ../paper_PG_INV/results/carc_chr6/100_inv/ ../paper_PG_INV/results/carc_chr6/chr6_sim_100inv.bed cactus minigraph mgc pggb
-```
-
 ### Output
 
 The output is sorted into 4 subfolders in the given output directory, which are created if not yet existing:
