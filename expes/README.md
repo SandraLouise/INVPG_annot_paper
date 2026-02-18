@@ -41,32 +41,23 @@ sbatch build_[tool]_graph.sh <INPUT_FILE> <FINAL_GFA>
 - works with any number of haplotypes
 
 
-
-
 ### Versions of the tools:
 
-> May 2025:
-
-| tool | version | env |
+| tool | version |
 | --- | --- | --- |
-| minigraph | `0.21-r606` | `minigraph/`| 
-| mgc | `cactus_2_8_2` or `7.0.0` (with `--version`) | `cactus_2_8_2/cactus/cactus_env/`| 
-| cactus | `6.0.0` (with `--version`)  | `cactus/cactus_env/bin/activate` (and `cactus-bin-v2.6.7/venv_cactus-v2.6.7/` for `hal2vg`) | 
-| pggb | `0.6.0` (April 2024) | `pggb`| 
-
-
-
+| minigraph | `0.21-r606` |
+| mc | `cactus_2_9_9` |
+| cactus | `6.0.0` (with `--version`)  |
+| pggb | `0.7.4` |
 
 
 ## 2. Bubble detection
 
 ### VG-deconstruct for Cactus, Minigraph-Cactus, and PGGB graphs
 
-> vg v1.61.0
+Note: `vg-deconstruct` can detect path-explicit inversions consisting of a single node. It is no longer necessary to use another script for these bubbles.
 
-Note: `vg-deconstruct` can detect path-explicit inversions consisting of a single node. It is no longer necessary to use another script for these bubbles (for history, the script and examples are still explained at the end of the Readme).
-
-Env conda : `vg1.61.0`
+Env conda : `vg1.65.0`
 
 ```bash
 vg deconstruct -p REFPATH -a GRAPH.gfa > BUBBLES.vcf
@@ -112,7 +103,3 @@ invpg -v BUBBLES.vcf -g GRAPH.gfa -d DIV_PERCENTAGE
 ```
 
 - using DIV_PERCENTAGE = 10.
-
-## 4. Comparison of annotated and true inversions, recall
-
-TODO with automated script.
