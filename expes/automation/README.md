@@ -1,5 +1,8 @@
 # Automated pipeline run
 
+> [!NOTE]\
+> Simply cloning this repo does not create the directory structure. You may need to adapt the command line instructions to your own data to proceed.
+
 The automated pipeline allows to reproduce the results of the paper. It encompasses the graph construction, bubble calling, inversion annotation and annotation evaluation.
 
 ## Main scripts

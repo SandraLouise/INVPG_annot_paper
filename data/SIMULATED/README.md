@@ -1,5 +1,8 @@
 # Generating inversion set and synthetic haplotypes
 
+> [!NOTE]\
+> Simply cloning this repo does not create the directory structure. You may need to adapt the command line instructions to your own data to proceed.
+
 **This pipeline only works for generating synthetic haplotypes from a single chromosome.**
 
 ## Steps
