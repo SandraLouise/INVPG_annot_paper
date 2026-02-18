@@ -24,7 +24,7 @@ The automated pipeline is run by two main scripts:
 - `path_output`: absolute path to the output directory
 - `path_truth`: absolute path to the inversion truth file
     - **/!\ for now best to use a BED formatted file** (see [evaluation_commands.md](https://gitlab.inria.fr/sromain/invpg-annot_publication/-/blob/main/expes/eval_and_stats/evaluation_commands.md?ref_type=heads#requires-truth_file-to-be-in-bed-format))
-- `tools`: list of the graph building tools to use (separated by spaces), among {`cactus`, `minigraph`, `mgc`, `pggb`, `pggb_v0.7.4`}.
+- `tools`: list of the graph building tools to use (separated by spaces), among {`cactus`, `minigraph`, `mgc`, `pggb`}.
 
 ### Command
 
@@ -35,12 +35,12 @@ expe_run.sh dir_input_files expe_id path_output path_truth tools
 Examples:
 ```bash
 # Human chm13 chr21
-expe_run.sh ../invpg-annot/simu-chr21/ 2hap_div0.1 ../paper_PG_INV/results/chm13_chr21/ ../paper_PG_INV/results/chm13_chr21/chr21_sim_100inv.bed cactus minigraph mgc pggb
-expe_run.sh ../paper_PG_INV/data/new_sim_human/ 2hap_div0 ../paper_PG_INV/results/chm13_chr21/ ../paper_PG_INV/results/chm13_chr21/chr21_sim_100inv.bed cactus minigraph mgc pggb pggb_v0.7.4
+expe_run.sh . 2hap_div0.1 . chr21_sim_100inv.bed cactus minigraph mgc pggb
+expe_run.sh . 2hap_div0 . chr21_sim_100inv.bed cactus minigraph mgc pggb
 
 # Coeno carc chr6
-expe_run.sh ../paper_PG_INV/data/new_sim_coeno/50_inv/ 2hap_div0.1 ../paper_PG_INV/results/carc_chr6/50_inv/ ../paper_PG_INV/results/carc_chr6/chr6_sim_50inv.bed cactus minigraph mgc pggb pggb_v0.7.4
-expe_run.sh ../paper_PG_INV/data/new_sim_coeno/100_inv/ 2hap_div0.1 ../paper_PG_INV/results/carc_chr6/100_inv/ ../paper_PG_INV/results/carc_chr6/chr6_sim_100inv.bed cactus minigraph mgc pggb pggb_v0.7.4
+expe_run.sh ../paper_PG_INV/data/new_sim_coeno/50_inv/ 2hap_div0.1 ../paper_PG_INV/results/carc_chr6/50_inv/ ../paper_PG_INV/results/carc_chr6/chr6_sim_50inv.bed cactus minigraph mgc pggb
+expe_run.sh ../paper_PG_INV/data/new_sim_coeno/100_inv/ 2hap_div0.1 ../paper_PG_INV/results/carc_chr6/100_inv/ ../paper_PG_INV/results/carc_chr6/chr6_sim_100inv.bed cactus minigraph mgc pggb
 ```
 
 ### Output
@@ -54,8 +54,6 @@ The output is sorted into 4 subfolders in the given output directory, which are 
 ### Prepare merged results for paper figures
 
 #### .eval file
-
-**TO-DO:** a single command for all expes (as for the .intersect file)
 
 Example with human chm13 chr21 simulation at div 0%:
 ```bash
@@ -80,7 +78,6 @@ sed -i 's/div//g' merged_2hap.intersect
 - [build_minigraph_graph.sh](expes/graph_construction_scripts/build_minigraph_graph.sh)
 - [build_mgc_graph.sh](expes/graph_construction_scripts/build_mgc_graph.sh)
 - [build_pggb_graph.sh](expes/graph_construction_scripts/build_pggb_graph.sh)
-- `build_pggb_v0.7.4_graph.sh`: `/scratch/clemaitr/invpg-annot/expes-simu-chr21/build_pggb_v0.7.4_graph.sh`
 - [minigraph_call_pipeline.sh](expes/bubble_calling/minigraph_call_pipeline.sh): calls bubbles in minigraph graphs and convert them to VCF format
 - [graph_annot_statistics.sh](expes/eval_and_stats/graph_annot_statistics.sh): computes the graph, annotation and evaluation statistics from a GFA file, the INVPG-annot stats output , and the inversion truth file
 - [redundancy_stats.py](expes/eval_and_stats/redundancy_stats.py): called by `graph_annot_statistics.sh`, computes the annotation redundancy statistics
