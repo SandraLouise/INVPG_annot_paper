@@ -3,6 +3,8 @@
 > [!NOTE]\
 > Simply cloning this repo does not create the directory structure. You may need to adapt the command line instructions to your own data to proceed.
 
+Simulated datasets used in the paper are available on Zenodo repository at the following: https://doi.org/10.5281/zenodo.18695551
+
 **This pipeline only works for generating synthetic haplotypes from a single chromosome.**
 
 ## Steps
