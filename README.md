@@ -9,4 +9,4 @@ Compilation of the scripts used to produce the datasets and results showed in IN
 
 ## Paper citation
 
-Romain, S., Dubois, S., Legeai, F., & Lemaitre, C. (2025). Investigating the topological motifs of inversions in pangenome graphs. *bioRxiv*, 2025-03, https://doi.org/10.1101/2025.03.14.643331.
+Romain, S., Dubois, S., Legeai, F., & Lemaitre, C. (2025). Investigating the topological motifs of inversions in pangenome graphs. *bioRxiv*, 2026-02, https://doi.org/10.1101/2025.03.14.643331v2.
