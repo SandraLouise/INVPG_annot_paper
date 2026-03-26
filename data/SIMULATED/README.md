@@ -9,11 +9,11 @@ Simulated datasets used in the paper are available on Zenodo repository at the f
 
 ## Steps
 
-1) Generating one inversion VCF (for all datasets with different SNP divergences)
+1) Generating one inversion set in VCF (for all datasets with different SNP divergences)
 2) Generating a synthetic haplotype with a controlled SNP rate (+ set of SNPs in VCF format)
 3) Simulating inversions in synthetic haplotypes
-    - 3.A: Simulate 1 synthetic haplotype with the full set of inversions (_i.e._ 100)
-    - 3.B: Simulate 9 synthetic haplotypes with half of the inversions (_i.e._ 50), randomly picked for each haplotype 
+    - 3.A: Simulate 1 synthetic haplotype with the full set of inversions
+    - 3.B: Simulate 9 synthetic haplotypes with half of the inversions, randomly picked for each haplotype 
 
 
 ## Full process with the automatized scripts
@@ -27,13 +27,12 @@ The automatized scripts automatize steps 2) and 3) for a given SNP rate, and gen
 
 2 input data to prepare : the reference genome (correct fasta format) + the inversion VCF
 
-#### Input chromosome files
+#### Input chromosome file
 
 Reference genome requirements: one single chromosome + header in panSN format (eg. `>chm13#0#chr21`)
     
-1 set of simulations:
-- Simulations based on human chr21 (28 Mb) : `chr21.fa`
-    - Sub-sequence of the CHM13 chr21 (no N) : from 17 Mb - to 45 Mb, to avoid peri-centromeric/sub-telomeric regions
+In the paper, simulations were all based on the human chr21, without peri-centromeric/sub-telomeric regions
+ (substring of the CHM13 chr21: from 17 Mb - to 45 Mb: 28 Mb): `chr21.fa`
 
 #### Inversion generation
 
@@ -41,11 +40,11 @@ Script: `01_generate_random_inversion_set.py`
 
 Parameters:
 - `REF` [str]: path to the reference fasta file
-- `number` [int]: number of inversions to simulate (reproductibility: **100**)
+- `number` [int]: number of inversions to simulate
 - `SEED`[int]: fixes the random seed for reproducibility
 
 ### Output file
-- `VCF` [str]: path to output simulated inversion set
+- `VCF` [str]: path to the output simulated inversion set
 
 ```bash
 python 01_generate_random_inversion_set.py <REF> <number> <SEED> > <VCF>
