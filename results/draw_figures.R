@@ -82,7 +82,7 @@ df_recall_accuracy <- function(recall_bkpt_accur, array_threshold, n_haplotypes)
 #-------------------------------------------------------------------------------
 # MASTER PATH TO INPUT FILES FOLDER
 #-------------------------------------------------------------------------------
-MASTER_PATH = "~/Documents/Paper/revisions/Final_figures/"
+MASTER_PATH = "~/Documents/Paper/GIT_repro_prive/invpg-annot_publication/results/"
 
 #-------------------------------------------------------------------------------
 # Simulated data (CHM13)
@@ -533,17 +533,19 @@ plot2 <- intersect_2haps %>%
         plot.title = element_text(face = "bold"))
 
 #---------------------------------------
-# Fig 3C --> TODO
+# Fig 3C
 #---------------------------------------
 
 plot3 <- ggplot(inv_density, aes(x=Density_inv, y=Recall, group=PG)) +
   geom_line(aes(color=PG), linewidth=0.9, alpha=0.6) +
   geom_point(aes(color=PG, shape=PG), size=3, alpha=1) +
   ylim(60, 100) +
+  scale_x_continuous(breaks = c(24, 32, 43, 56, 68, 74)) +
   labs(title="C", x="Inversion density (% of bp)", y = "Recall (%)") +
   theme_minimal() +
   theme(legend.position = 'bottom',
-        plot.title = element_text(face = "bold")) +
+        plot.title = element_text(face = "bold"),
+        panel.grid.minor.x = element_blank()) +
   geom_label_repel(
     data = subset(inv_density, PG == "Minigraph"),
     aes(label = N_inv),
@@ -936,7 +938,7 @@ Sup_div <- ggplot(div_parameter_recall,
   theme(legend.position = "bottom",
         panel.grid.minor.x = element_blank())
 
-pdf(file="~/Documents/Paper/revisions/Final_figures/Supplementary/max_div_div1.pdf",
+pdf(file=paste0(MASTER_PATH, "/Supplementary/max_div_div1.pdf"),
     width=7, height=5)
 plot(Sup_div)
 dev.off()
@@ -955,7 +957,8 @@ Sup_cov <- ggplot(cov_parameter_recall,
   scale_y_continuous(limits = c(0, 100)) +
   # force the x ticks
   scale_x_continuous(
-    breaks = c(0.1, 0.25, 0.50, 0.75, 0.9, 0.95, 0.99, 1)
+    breaks = c(0.1, 0.25, 0.50, 0.75, 0.9, 0.95, 0.99, 1),
+    labels = c("0.1", "0.25", "0.5", "0.75", "0.9", "", "", "1")
   ) +
   labs(
     x = "cov parameter value",
@@ -972,7 +975,7 @@ Sup_cov <- ggplot(cov_parameter_recall,
   theme(legend.position = "bottom",
         panel.grid.minor.x = element_blank())
 
-pdf(file="~/Documents/Paper/revisions/Final_figures/Supplementary/min_cov_div1.pdf",
+pdf(file=paste0(MASTER_PATH, "/Supplementary/min_cov_div1.pdf"),
     width=7, height=5)
 plot(Sup_cov)
 dev.off()
@@ -982,7 +985,7 @@ dev.off()
 #-------------------------------------------------------------------------------
 # Import results
 results = read.table(
-  file="~/Documents/Paper/revisions/Final_figures/Supplementary/overlap_parameter/CHM13_2hap_div1_recall_stats.txt",
+  file=paste0(MASTER_PATH, "/Supplementary/overlap_parameter/CHM13_2hap_div1_recall_stats.txt"),
   header = F,
   sep = " "
 )
@@ -1035,7 +1038,7 @@ Sup_overlap = ggplot(results_toPlot, aes(x=over, y=recall, group=pg)) +
   theme(legend.position = 'bottom',
         panel.grid.minor.x = element_blank())
 
-pdf(file="~/Documents/Paper/revisions/Final_figures/Supplementary/Sup_overlap_parameters.pdf",
+pdf(file=paste0(MASTER_PATH, "/Supplementary/Sup_overlap_parameters.pdf"),
     width=7, height=5)
 plot(Sup_overlap)
 dev.off()
